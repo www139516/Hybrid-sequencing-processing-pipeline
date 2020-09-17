@@ -51,7 +51,7 @@ class ParamGenerator:
             param_file.writelines('\n\n')
 
             param_file.writelines('[common_parameters]\n')
-            param_file.writelines('; The name of this project. \n proj_name={} \n'.format(self._proj_name))
+            param_file.writelines('; The name of this project. \n proj_name = {} \n'.format(self._proj_name))
             param_file.writelines('; The path of the reference assembly file used in this project. ref_assembly = {} \n'.format(self._ref_fpath))
             param_file.writelines('; The path of the directory for the output results. \n output_dir = {} \n'.format(self._output_dpath))
             param_file.writelines('; The thread used in this program, default value is 1. \n threads = 1 \n')
@@ -60,23 +60,29 @@ class ParamGenerator:
             # ccs movieX.subreads.bam movieX.ccs.bam --noPolish --minPasses 1 
             # lima --isoseq --dump-clips --no-pbi [--peek-guess] -j 24 ccs.bam primers.fasta demux.bam
             # isoseq3 refine --require-polya combined_demux.consensusreadset.xml primers.fasta unpolished.flnc.bam
-            param_file.writelines('[step_1_isoseq_parameters]')
+            param_file.writelines('[step_1_isoseq_parameters] \n')
             param_file.writelines('; input: The path of the input subreads file. \n i_subread_fpath = \n')
-            param_file.writelines('; input: The path of the primers.fasta file. \n i_primer_file = \n')
+            param_file.writelines('; input: The path of the primers.fasta file. \n i_primer_fpath = \n')
             param_file.writelines(
                 '; param: Output the initial template derived from the POA (faster but less accurate), default value set in this programe is True \n p_no_polish = True \n')
             param_file.writelines(
                 '; param: Minimum number of subreads required to generate CCS, default value set in this program is 1. \n p_min_passes = 1 \n')
             param_file.writelines(
-                '; param: set to True if your transcripts have a polyA tail, default value in this program is True. \n polya = True \n')
-            param_file.writelines('; output: The output of this step, automatically set if you do not set it in this config file. \n o_out = auto \n')
+                '; param: set to True if your transcripts have a polyA tail, default value in this program is True. \n p_polya = True \n')
+            param_file.writelines('; output: The output of this step, automatically set if you do not set it in this config file. \n o_flnc_out = auto \n')
+            param_file.writelines('\n')
 
-            param_file.writelines('[step_2_fqtrim_parameters]')
+            param_file.writelines('[step_2_fqtrim_parameters] \n')
             """
                 fqtrim -A -l25 -o trimmed.fq.gz exome_reads_1.fastq.gz,exome_reads_2.fastq.gz
             """
-            param_file.writelines('; input: The path of the short read file, fastq or fastq.gz format. \n short_read_file = \n')
-            param_file.writelines('; input: The output suffix of the trimmed file. \n out_suffix = \n')
+            param_file.writelines('; input: The path of the short read file, fastq or fastq.gz format, using comma to separate two paired files if needed. \n i_short_read_file = \n')
+            # param_file.writelines('; input: The score system used in short read sequencing. phred33 (default) or phred64. \n phred = \n')
+            param_file.writelines('; param: minimal lenth retained after trimming. lenth = \n')
+            param_file.writelines('; param: genomic sequencing (g) or RNA-sequencing (r, default). \n sequencing_type = r \n')
+            param_file.writelines(
+                '; onput: The output suffix of the trimmed file. \n o_suffix = trimmed.fq.gz \n')
+            param_file.writelines('; output: the path of the dir where you put the output trimmed files. \n o_trim_dir = {}/trimmed_files/ \n'.format(self._output_dpath))
             param_file.close()
         return self._param_fpath
         
