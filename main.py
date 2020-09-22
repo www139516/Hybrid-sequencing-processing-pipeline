@@ -2,6 +2,7 @@ import argparse
 from parameters.param_generater import ParamGenerator
 from parameters.param_reader import ParamsReader
 from process_module.sub2flnc import FlncGenerator
+from process_module.trim_fq import TrimShortReads
 
 
 def main():
@@ -26,6 +27,12 @@ def main():
         flnc_seq.sub2ccs()
         flnc_seq.ccs2flccs()
         flnc_fpath = flnc_seq.flccs2flnc()
+
+    if '2' in args.step:
+        trimmed_files = TrimShortReads()
+        trimmed_files = trimmed_files.fit(params_obj)
+        lst_trimmed_fpath = trimmed_files.cmd_fqtrim()
+
 
 
 

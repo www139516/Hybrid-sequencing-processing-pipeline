@@ -78,11 +78,12 @@ class ParamGenerator:
             """
             param_file.writelines('; input: The path of the short read file, fastq or fastq.gz format, using comma to separate two paired files if needed. \n i_short_read_file = \n')
             # param_file.writelines('; input: The score system used in short read sequencing. phred33 (default) or phred64. \n phred = \n')
-            param_file.writelines('; param: minimal lenth retained after trimming. lenth = \n')
-            param_file.writelines('; param: genomic sequencing (g) or RNA-sequencing (r, default). \n sequencing_type = r \n')
+            param_file.writelines('; param: minimal lenth retained after trimming. \n p_lenth = \n')
+            param_file.writelines('; param: genomic sequencing (g, means do not trim poly A) or RNA-sequencing (r, default, trim poly A). \n p_sequencing_type = r \n')
+            param_file.writelines('; param: quality value for trimming, default is 20. \n p_qvalue = 20 \n')
             param_file.writelines(
                 '; onput: The output suffix of the trimmed file. \n o_suffix = trimmed.fq.gz \n')
-            param_file.writelines('; output: the path of the dir where you put the output trimmed files. \n o_trim_dir = {}/trimmed_files/ \n'.format(self._output_dpath))
+            param_file.writelines('; output: the path of the dir where you put the output trimmed files. \n o_trimmed_dir = {}/trimmed_files/ \n'.format(self._output_dpath))
             param_file.close()
         return self._param_fpath
         

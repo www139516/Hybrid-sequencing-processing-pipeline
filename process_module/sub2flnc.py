@@ -76,11 +76,11 @@ class FlncGenerator:
         if os.path.exists(self._out_ccs_fpath):
             print('{} already exists.'.format(self._out_ccs_fpath))
         else:
-            polish = self._params_obj.get(
+            no_polish = self._params_obj.get(
                 'step_1_isoseq_parameters', 'p_no_polish')
             min_pass = self._params_obj.get(
                 'step_1_isoseq_parameters', 'p_min_passes')
-            if polish.lower() == 'true':
+            if no_polish.lower() == 'true':
                 cmd_subreads2ccs = 'ccs {input_subreads} {output} '.format(input_subreads=self._subread_fpath,
                                                                         output=self._out_ccs_fpath) + \
                     '--noPolish --minPasses {}'.format(min_pass)
