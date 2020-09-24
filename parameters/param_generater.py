@@ -29,7 +29,8 @@ class ParamGenerator:
         if not output_dpath:
             self._output_dpath = os.path.join(os.getcwd(), 'proj_{}'.format(self._proj_name))
         else:
-            self._output_dpath = output_dpath
+            self._output_dpath = os.path.join(
+                os.path.abspath(output_dpath), 'proj_{}'.format(self._proj_name))
         
         if not os.path.exists(self._output_dpath):
             os.mkdir(self._output_dpath)
@@ -43,6 +44,7 @@ class ParamGenerator:
     def generate_param_file(self):
         if os.path.exists(self._param_fpath):
             print('The parameter files is already exist.')
+            print('Reading the parameter files....')
         else:
             param_file = open(self._param_fpath, 'a')
 
@@ -54,7 +56,7 @@ class ParamGenerator:
             param_file.writelines('; The name of this project. \n proj_name = {} \n'.format(self._proj_name))
             param_file.writelines('; The path of the reference assembly file used in this project. ref_assembly = {} \n'.format(self._ref_fpath))
             param_file.writelines('; The path of the directory for the output results. \n output_dir = {} \n'.format(self._output_dpath))
-            param_file.writelines('; The thread used in this program, default value is 1. \n threads = 1 \n')
+            param_file.writelines('; The threads used in this program, default value is 1. \n threads = 8 \n')
             param_file.writelines('\n')
 
             # ccs movieX.subreads.bam movieX.ccs.bam --noPolish --minPasses 1 
@@ -78,12 +80,54 @@ class ParamGenerator:
             """
             param_file.writelines('; input: The path of the short read file, fastq or fastq.gz format, using comma to separate two paired files if needed. \n i_short_read_file = \n')
             # param_file.writelines('; input: The score system used in short read sequencing. phred33 (default) or phred64. \n phred = \n')
-            param_file.writelines('; param: minimal lenth retained after trimming. \n p_lenth = \n')
+            param_file.writelines('; param: minimal lenth retained after trimming, default value is 40. \n p_lenth = 40 \n')
             param_file.writelines('; param: genomic sequencing (g, means do not trim poly A) or RNA-sequencing (r, default, trim poly A). \n p_sequencing_type = r \n')
             param_file.writelines('; param: quality value for trimming, default is 20. \n p_qvalue = 20 \n')
             param_file.writelines(
                 '; onput: The output suffix of the trimmed file. \n o_suffix = trimmed.fq.gz \n')
             param_file.writelines('; output: the path of the dir where you put the output trimmed files. \n o_trimmed_dir = {}/trimmed_files/ \n'.format(self._output_dpath))
+            param_file.writelines('\n')
+
+            param_file.writelines('[step_3_correction_parameters] \n')
+            """
+                lordec-correct
+
+                -i|--long_reads <long read FASTA/Q file>
+                -2|--short_reads <short read FASTA/Q file(s)>
+                -k|--kmer_len <k-mer size>
+                -o|--corrected_read_file <output reads file>
+                -s|solid_threshold <solid k-mer abundance threshold>
+                [-t|--trials <number of paths to try from a k-mer>]
+                [-b|--branch <maximum number of branches to explore>]
+                [-e|--errorrate <maximum error rate>]
+                [-T|--threads <number of threads>]
+                [-S|--stat_file <out statistics file>]
+                [-c|--complete_search]
+                [-a|--abundance-max <abundance max threshold for k-mers>]
+                [-O|--out-tmp <GATB graph creation temporary files directory>]
+                [-p|--progress]
+                [-g|--graph_named_like_output]
+
+            """
+            param_file.writelines('; program: using lordec (l, default) or proovread (p). \n program_for_correction = l \n')
+            param_file.writelines(
+                '; input: The path of the short read file, fastq or fastq.gz format, using comma to separate two paired files if needed. \n i_short_read_fpath = auto \n')
+            param_file.writelines('; input: The path of the long read file. \n i_long_read_fpath = auto \n')
+            param_file.writelines('; param: kmer length, the recommend values in the lordec website are 17-19 for small genome, 21 for large genome (>2g, default). \n p_kmer_len = 21 \n')
+            param_file.writelines('; param: solid threshold, default value is 3. \n p_solid_threshold = 3 \n ')
+            param_file.writelines('; param: abundance max, default value is 10000. \n p_abundance_max = 10000 \n')
+            param_file.writelines(
+                '; param:  the maximum error rate of corrected regions (default is 0.4). \n errorrate = 0.4 \n')
+            param_file.writelines('; output: corrected reads file, . \n o_corrected_seq_fpath = auto \n')
+            param_file.writelines('; output: stat file. \n o_stat_fpath = auto \n\n')
+            param_file.writelines('; additional prameters for proovread. \n')
+            """
+                '{path_of_proovread} -l {long_read_seq_fpath} -s {short_read_seq_fpaths} -p {pre} > proovread.log'
+            """
+            param_file.writelines(
+                '; param: Estimated short read coverage, default value is 50X. \n p_prov_coverage = 50')
+            param_file.writelines('; output: prefix of output files. \n o_prov_prefix = auto \n')
+
             param_file.close()
         return self._param_fpath
         
