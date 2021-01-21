@@ -144,7 +144,8 @@ class FlncGenerator:
             print(cmd_flccs2flnc)                                                                                    
             if subprocess.check_call(cmd_flccs2flnc, shell=True) != 0:
                 raise SystemCommandError
-            self.__bam2fa()
+        
+        self.__bam2fa()
         return self._out_flnc_fa_fpath
 
     def __bam2fa(self):
@@ -162,4 +163,5 @@ class FlncGenerator:
             '''.format(flnc_bam_path=self._out_flnc_fpath, flnc_fa_path=self._out_flnc_fa_fpath)
             if subprocess.check_call(cmd_bam2fa, shell=True) != 0:
                 raise SystemCommandError
+        # return self._out_flnc_fa_fpath
         

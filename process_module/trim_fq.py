@@ -91,8 +91,8 @@ class TrimShortReads:
                     seq_f1 =self._short_read1_fpath,
                     seq_f2 = self._short_read2_fpath
                 )
-            self._lst_o_fpath.append(out_fname1)
-            self._lst_o_fpath.append(out_fname2)
+            self._lst_o_fpath.append(os.path.join(self._o_dpath, out_fname1))
+            self._lst_o_fpath.append(os.path.join(self._o_dpath, out_fname2))
 
         print('Trimming short reads...')
         if subprocess.check_call(cmd, shell=True) != 0:
